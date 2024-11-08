@@ -20,7 +20,7 @@ export default function GeographyRound() {
     }
 
     async function fetchQuestion() {
-      const response = await fetch(`/api/rounds?round=geography`);
+      const response = await fetch(`/api/rounds?round=music`);
       const data = await response.json();
 
       if (track === "1") {
@@ -43,7 +43,6 @@ export default function GeographyRound() {
       setScore((prev) => prev - 10);
     }
   }
-  console.log("question", question);
 
   return (
     <div>
