@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from "react";
 import rounds from "../../config/rounds";
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 
 export default function CyberRound() {
   const [hint, setHint] = useState("");
@@ -11,6 +21,8 @@ export default function CyberRound() {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [roundNum, setRoundNum] = useState();
+  const isCompleted = Boolean(localStorage.getItem("completed"));
+  const [completed, setCompleted] = useState(isCompleted);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -95,7 +107,8 @@ export default function CyberRound() {
         localStorage.setItem("roundNum", nextRoundNum);
         localStorage.setItem("totalScore", newScore);
         alert("Answer correct! Moving to the next round.");
-        window.location.href = `/${rounds[nextRoundNum]}`;
+        setCompleted(true);
+        localStorage.setItem("completed", true);
       } else {
         alert("Incorrect answer. Try again!");
       }
@@ -106,23 +119,92 @@ export default function CyberRound() {
   }
 
   return (
-    <div>
-      <h1>Geography Round</h1>
-      <p>Hint: {hint}</p>
-      <p>Question: {question}</p>
-      <select
-        value={selectedAnswer}
-        onChange={(e) => setSelectedAnswer(e.target.value)}
+    <Container
+      style={{
+        backgroundColor: "#121212",
+        color: "#fff",
+        minHeight: "100vh",
+        padding: "2rem",
+      }}
+    >
+      <Typography variant="h4" gutterBottom align="center">
+        Final Round
+      </Typography>
+
+      <Box
+        sx={{
+          backgroundColor: "#1c1c1c",
+          padding: "1rem",
+          borderRadius: "8px",
+          marginBottom: "1rem",
+        }}
       >
-        <option value="">Select an answer</option>
-        {options.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleSubmit}>Submit</button>
-      <p>Score: {score}</p>
-    </div>
+        <Typography variant="h6" color="violet">
+          Hint:
+        </Typography>
+        <Typography variant="body1" color="white">
+          {hint}
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          backgroundColor: "#1c1c1c",
+          padding: "1rem",
+          borderRadius: "8px",
+          marginBottom: "1rem",
+        }}
+      >
+        <Typography variant="h6" color="aqua">
+          Question:
+        </Typography>
+        <Typography variant="body1" color="white">
+          {question}
+        </Typography>
+      </Box>
+
+      <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
+        <InputLabel id="answer-select-label" style={{ color: "#fff" }}>
+          Select an answer
+        </InputLabel>
+        <Select
+          labelId="answer-select-label"
+          value={selectedAnswer}
+          label="Select an answer"
+          onChange={(e) => setSelectedAnswer(e.target.value)}
+          style={{
+            color: "#fff",
+            backgroundColor: "#333",
+            borderRadius: "8px",
+          }}
+        >
+          <MenuItem value="">Select an answer</MenuItem>
+          {options.map((option, index) => (
+            <MenuItem key={index} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit}
+        style={{ width: "100%", padding: "0.8rem", fontSize: "16px" }}
+        disabled={completed}
+      >
+        Submit
+      </Button>
+
+      <Typography
+        variant="h6"
+        color="textSecondary"
+        align="center"
+        style={{ marginTop: "1rem", color: "#fff" }}
+      >
+        Score: {score}
+      </Typography>
+    </Container>
   );
 }
