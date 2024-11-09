@@ -19,7 +19,6 @@ export default function LoginPage() {
   const [teamName, setTeamName] = useState("");
   const [password, setPassword] = useState("");
   const [isClient, setIsClient] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
