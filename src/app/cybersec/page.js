@@ -21,55 +21,56 @@ export default function CyberRound() {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [roundNum, setRoundNum] = useState();
-  const isCompleted = Boolean(localStorage.getItem("completed"));
-  const [completed, setCompleted] = useState(isCompleted);
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedScore = parseInt(localStorage.getItem("totalScore")) || 0;
       const savedRoundNum = parseInt(localStorage.getItem("roundNum")) || 1;
+      const isCompleted = Boolean(localStorage.getItem("completed"));
       setScore(savedScore);
       setRoundNum(savedRoundNum);
-    }
+      setCompleted(isCompleted);
 
-    const teamName = localStorage.getItem("teamName");
-    const color = localStorage.getItem("color");
+      const teamName = localStorage.getItem("teamName");
+      const color = localStorage.getItem("color");
 
-    if (!teamName || !color) {
-      window.location.href = "/login";
-      return;
-    }
-
-    if (roundNum < 5) {
-      const correctPath = `/${rounds[roundNum]}`;
-      window.location.href = correctPath;
-      return;
-    }
-
-    async function fetchQuestion() {
-      try {
-        const response = await fetch(`/api/rounds`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ color, round: "cybersec" }),
-        });
-
-        const data = await response.json();
-        const teamRound = data;
-
-        setHint(teamRound.hint);
-        setQuestion(teamRound.question);
-        setAnswer(teamRound.answer);
-        setOptions(["red", "blue", "green", "yellow", "violet", "orange"]);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        alert("Error fetching question data!");
+      if (!teamName || !color) {
+        window.location.href = "/login";
+        return;
       }
-    }
 
-    fetchQuestion();
+      if (savedRoundNum < 5) {
+        const correctPath = `/${rounds[savedRoundNum]}`;
+        window.location.href = correctPath;
+        return;
+      }
+
+      async function fetchQuestion() {
+        try {
+          const response = await fetch(`/api/rounds`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ color, round: "cybersec" }),
+          });
+
+          const data = await response.json();
+          const teamRound = data;
+
+          setHint(teamRound.hint);
+          setQuestion(teamRound.question);
+          setAnswer(teamRound.answer);
+          setOptions(["red", "blue", "green", "yellow", "violet", "orange"]);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          alert("Error fetching question data!");
+        }
+      }
+
+      fetchQuestion();
+    }
   }, [roundNum]);
 
   async function handleSubmit() {
@@ -79,7 +80,7 @@ export default function CyberRound() {
     console.log("Submitting answer:", selectedAnswer);
     console.log("Correct answer:", answer);
 
-    const answerCorrect = selectedAnswer == answer;
+    const answerCorrect = selectedAnswer === answer;
     const newScore = answerCorrect ? score + 50 : score - 20;
     const nextRoundNum = answerCorrect ? 6 : 5;
 
@@ -98,9 +99,9 @@ export default function CyberRound() {
 
     if (response.ok) {
       localStorage.setItem("totalScore", newScore);
+      localStorage.setItem("roundNum", nextRoundNum);
+
       if (answerCorrect) {
-        localStorage.setItem("roundNum", nextRoundNum);
-        localStorage.setItem("totalScore", newScore);
         alert("Answer correct!  +50 . Well Done.");
         setCompleted(true);
         localStorage.setItem("completed", true);
