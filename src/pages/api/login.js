@@ -1,4 +1,3 @@
-// pages/api/login.js
 import clientPromise from "../../lib/mongodb";
 
 export default async function handler(req, res) {
@@ -10,11 +9,13 @@ export default async function handler(req, res) {
     const team = await db.collection("teams").findOne({ teamName });
 
     if (team && password === team.password) {
-      res.status(200).json({ success: true, group: team.group });
+      res
+        .status(200)
+        .json({ success: true, group: team.group, track: team.track });
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
     }
   } else {
-    res.status(405).end(); // Method Not Allowed
+    res.status(405).end();
   }
 }

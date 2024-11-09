@@ -8,42 +8,89 @@ export default function GeographyRound() {
   const [score, setScore] = useState(0);
   const [hint, setHint] = useState("");
   const [correctAnswer, setCorrectAnswer] = useState("");
+  const [track, setTrack] = useState("");
+  const [teamName, setTeamName] = useState("");
 
   useEffect(() => {
     const teamName = localStorage.getItem("teamName");
     const password = localStorage.getItem("password");
     const track = localStorage.getItem("track");
+    console.log("track", track);
 
     if (!teamName || !password || !track) {
       window.location.href = "/login";
       return;
     }
 
-    async function fetchQuestion() {
-      const response = await fetch(`/api/rounds?round=geography`);
-      const data = await response.json();
+    setTrack(track);
+    setTeamName(teamName);
 
-      if (track === "1") {
-        setQuestion(data.track1.question);
-        setCorrectAnswer(data.track1.answer);
-      } else if (track === "2") {
-        setQuestion(data.track2.question);
-        setCorrectAnswer(data.track2.answer);
+    async function fetchQuestion() {
+      try {
+        const response = await fetch(`/api/rounds?round=geography`);
+        const data = await response.json();
+        console.log("Fetched Data:", data);
+
+        if (track === "1") {
+          setQuestion(data.track1.question);
+          setCorrectAnswer(data.track1.answer);
+        } else if (track === "2") {
+          setQuestion(data.track2.question);
+          setCorrectAnswer(data.track2.answer);
+        }
+
+        alert("Data fetched successfully!");
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        alert("Error fetching question data!");
       }
     }
 
     fetchQuestion();
-  }, []);
+  }, [track]);
 
   async function handleSubmit() {
-    if (answer === correctAnswer) {
-      setScore((prev) => prev + 50);
-      setHint("Here's a hint for the next round!");
-    } else {
-      setScore((prev) => prev - 10);
+    const answerCorrect = answer === correctAnswer;
+
+    try {
+      const response = await fetch("/api/score", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          teamName,
+          answerCorrect,
+          track,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(answerCorrect ? "Correct Answer!" : "Wrong Answer!");
+        setScore(data.newScore);
+        setHint("Here's a hint for the next round!");
+        localStorage.setItem(
+          "checkpoints",
+          JSON.stringify(data.newCheckpoints)
+        );
+
+        if (answerCorrect) {
+          if (track === "1") {
+            window.location.href = "/astro"; // Go to next track
+          } else if (track === "2") {
+            window.location.href = "/music"; // Go to next track
+          }
+        }
+      } else {
+        alert("Error updating score.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error submitting answer.");
     }
   }
-  console.log("question", question);
 
   return (
     <div>
