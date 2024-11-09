@@ -21,6 +21,7 @@ export default function AstroRound() {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [roundNum, setRoundNum] = useState();
+  const [showQuestion, setShowQuestion] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -79,10 +80,7 @@ export default function AstroRound() {
     const teamName = localStorage.getItem("teamName");
     const color = localStorage.getItem("color");
 
-    console.log("Submitting answer:", selectedAnswer);
-    console.log("Correct answer:", answer);
-
-    const answerCorrect = selectedAnswer == answer;
+    const answerCorrect = selectedAnswer === answer;
     const newScore = answerCorrect ? score + 50 : score - 20;
     const nextRoundNum = answerCorrect ? 4 : 3;
 
@@ -115,6 +113,10 @@ export default function AstroRound() {
     }
   }
 
+  const toggleQuestionVisibility = () => {
+    setShowQuestion(!showQuestion);
+  };
+
   return (
     <Container
       maxWidth="sm"
@@ -127,50 +129,86 @@ export default function AstroRound() {
       }}
     >
       <Typography variant="h4" align="center" sx={{ marginBottom: "20px" }}>
-        Geography Round
+        Astronomy + Music Round
       </Typography>
-      <Box sx={{ marginBottom: "10px" }}>
-        <Typography variant="h6">Hint:</Typography>
-        <Typography>{hint}</Typography>
-      </Box>
-      <Box sx={{ marginBottom: "20px" }}>
-        <Typography variant="h6">Question:</Typography>
-        <Typography>{question}</Typography>
-      </Box>
-      <FormControl fullWidth variant="outlined" sx={{ marginBottom: "20px" }}>
-        <InputLabel sx={{ color: "white" }}>Select an answer</InputLabel>
-        <Select
-          value={selectedAnswer}
-          onChange={(e) => setSelectedAnswer(e.target.value)}
-          label="Select an answer"
-          sx={{
-            backgroundColor: "#1e1e1e",
-            color: "white",
-            "& .MuiSvgIcon-root": { color: "white" },
-          }}
-        >
-          {options.map((option, index) => (
-            <MenuItem key={index} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit}
-        fullWidth
+      <Box
         sx={{
-          backgroundColor: "#6200ea",
-          color: "white",
-          "&:hover": {
-            backgroundColor: "#3700b3",
-          },
+          backgroundColor: "#1e1e1e",
+          padding: "15px",
+          borderRadius: "8px",
+          marginBottom: "20px",
         }}
       >
-        Submit
-      </Button>
+        <Typography variant="h6">Hint:</Typography>
+        <Typography color="aqua">{hint}</Typography>
+        <Typography sx={{ marginTop: "10px" }}>
+          Solve the puzzle in real life, then submit here. Once done, click
+          below:
+        </Typography>
+        <Button
+          variant="outlined"
+          onClick={toggleQuestionVisibility}
+          sx={{
+            color: "white",
+            borderColor: "white",
+            "&:hover": {
+              backgroundColor: "#3700b3",
+              borderColor: "#3700b3",
+            },
+            marginTop: "10px",
+          }}
+        >
+          {showQuestion ? "Not Solved Yet" : "Solved"}
+        </Button>
+      </Box>
+      {showQuestion && (
+        <Box
+          sx={{
+            backgroundColor: "#1e1e1e",
+            padding: "15px",
+            borderRadius: "8px",
+            marginBottom: "20px",
+          }}
+        >
+          <Typography variant="h6">Question:</Typography>
+          <Typography>{question}</Typography>
+          <FormControl fullWidth variant="outlined" sx={{ marginTop: "20px" }}>
+            <InputLabel sx={{ color: "white" }}>Select an answer</InputLabel>
+            <Select
+              value={selectedAnswer}
+              onChange={(e) => setSelectedAnswer(e.target.value)}
+              label="Select an answer"
+              sx={{
+                backgroundColor: "#1e1e1e",
+                color: "white",
+                "& .MuiSvgIcon-root": { color: "white" },
+              }}
+            >
+              {options.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            fullWidth
+            sx={{
+              backgroundColor: "#6200ea",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#3700b3",
+              },
+              marginTop: "20px",
+            }}
+          >
+            Submit
+          </Button>
+        </Box>
+      )}
       <Box sx={{ marginTop: "20px", textAlign: "center" }}>
         <Typography variant="h6">Score: {score}</Typography>
       </Box>

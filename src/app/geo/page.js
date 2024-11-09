@@ -81,11 +81,6 @@ export default function GeographyRound() {
     fetchQuestion();
   }, [roundNum]);
 
-  // function generateOptions(correctAnswer) {
-  //   const randomOptions = ["Option1", "Option2", "Option3"];
-  //   return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
-  // }
-
   async function handleSubmit() {
     const teamName = localStorage.getItem("teamName");
     const color = localStorage.getItem("color");
