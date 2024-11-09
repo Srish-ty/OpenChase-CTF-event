@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TextField, Button, Box, Typography, Container } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -17,7 +18,12 @@ const theme = createTheme({
 export default function LoginPage() {
   const [teamName, setTeamName] = useState("");
   const [password, setPassword] = useState("");
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   async function handleLogin() {
     const response = await fetch("/api/login", {
@@ -42,6 +48,10 @@ export default function LoginPage() {
     } else {
       alert("Invalid login credentials");
     }
+  }
+
+  if (!isClient) {
+    return null;
   }
 
   return (
