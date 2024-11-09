@@ -20,7 +20,8 @@ export default function CodingRound() {
   const [options, setOptions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
-  const [roundNum, setRoundNum] = useState();
+  const currentRound = parseInt(localStorage.getItem("roundNum"));
+  const [roundNum, setRoundNum] = useState(currentRound);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -68,7 +69,7 @@ export default function CodingRound() {
     }
 
     fetchQuestion();
-  }, [roundNum]);
+  }, []);
 
   function generateOptions(correctAnswer) {
     const randomOptions = ["Option1", "Option2", "Option3"];

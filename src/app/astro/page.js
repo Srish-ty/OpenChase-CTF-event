@@ -1,6 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 import rounds from "../../config/rounds";
 
 export default function AstroRound() {
@@ -106,23 +116,64 @@ export default function AstroRound() {
   }
 
   return (
-    <div>
-      <h1>Geography Round</h1>
-      <p>Hint: {hint}</p>
-      <p>Question: {question}</p>
-      <select
-        value={selectedAnswer}
-        onChange={(e) => setSelectedAnswer(e.target.value)}
+    <Container
+      maxWidth="sm"
+      sx={{
+        backgroundColor: "#121212",
+        color: "white",
+        padding: "20px",
+        borderRadius: "8px",
+        boxShadow: 3,
+      }}
+    >
+      <Typography variant="h4" align="center" sx={{ marginBottom: "20px" }}>
+        Geography Round
+      </Typography>
+      <Box sx={{ marginBottom: "10px" }}>
+        <Typography variant="h6">Hint:</Typography>
+        <Typography>{hint}</Typography>
+      </Box>
+      <Box sx={{ marginBottom: "20px" }}>
+        <Typography variant="h6">Question:</Typography>
+        <Typography>{question}</Typography>
+      </Box>
+      <FormControl fullWidth variant="outlined" sx={{ marginBottom: "20px" }}>
+        <InputLabel sx={{ color: "white" }}>Select an answer</InputLabel>
+        <Select
+          value={selectedAnswer}
+          onChange={(e) => setSelectedAnswer(e.target.value)}
+          label="Select an answer"
+          sx={{
+            backgroundColor: "#1e1e1e",
+            color: "white",
+            "& .MuiSvgIcon-root": { color: "white" },
+          }}
+        >
+          {options.map((option, index) => (
+            <MenuItem key={index} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit}
+        fullWidth
+        sx={{
+          backgroundColor: "#6200ea",
+          color: "white",
+          "&:hover": {
+            backgroundColor: "#3700b3",
+          },
+        }}
       >
-        <option value="">Select an answer</option>
-        {options.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleSubmit}>Submit</button>
-      <p>Score: {score}</p>
-    </div>
+        Submit
+      </Button>
+      <Box sx={{ marginTop: "20px", textAlign: "center" }}>
+        <Typography variant="h6">Score: {score}</Typography>
+      </Box>
+    </Container>
   );
 }
