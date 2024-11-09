@@ -2,6 +2,26 @@
 
 import { useState, useEffect } from "react";
 import rounds from "../../config/rounds";
+import {
+  Button,
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: { main: "#4db6ac" },
+    secondary: { main: "#9c27b0" },
+    background: { default: "#1e1e1e", paper: "#2e2e2e" },
+    text: { primary: "#e0e0e0" },
+  },
+});
 
 export default function AstroRound() {
   const [hint, setHint] = useState("");
@@ -106,23 +126,101 @@ export default function AstroRound() {
   }
 
   return (
-    <div>
-      <h1>Geography Round</h1>
-      <p>Hint: {hint}</p>
-      <p>Question: {question}</p>
-      <select
-        value={selectedAnswer}
-        onChange={(e) => setSelectedAnswer(e.target.value)}
+    <ThemeProvider theme={theme}>
+      <Box
+        sx={{
+          bgcolor: "background.default",
+          color: "text.primary",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          padding: 2,
+          textAlign: "center",
+        }}
       >
-        <option value="">Select an answer</option>
-        {options.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleSubmit}>Submit</button>
-      <p>Score: {score}</p>
-    </div>
+        <Typography
+          variant="h4"
+          sx={{
+            color: "primary.main",
+            fontWeight: "bold",
+            marginBottom: 4,
+          }}
+        >
+          Biology and Ancient History Round
+        </Typography>
+
+        <Box
+          sx={{
+            bgcolor: "paper",
+            color: "text.primary",
+            padding: 3,
+            marginBottom: 3,
+            width: "100%",
+            maxWidth: "500px",
+            borderRadius: "8px",
+          }}
+        >
+          <Typography variant="body1" sx={{ marginBottom: 2 }}>
+            Hint: {hint}
+          </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            bgcolor: "paper",
+            color: "text.primary",
+            padding: 3,
+            marginBottom: 3,
+            width: "100%",
+            maxWidth: "500px",
+            borderRadius: "8px",
+          }}
+        >
+          <Typography variant="body1" sx={{ marginBottom: 2 }}>
+            Question: {question}
+          </Typography>
+        </Box>
+
+        <FormControl sx={{ marginBottom: 3, minWidth: 200 }}>
+          <InputLabel>Select an answer</InputLabel>
+          <Select
+            value={selectedAnswer}
+            onChange={(e) => setSelectedAnswer(e.target.value)}
+            label="Select an answer"
+            sx={{
+              backgroundColor: "background.paper",
+              color: "text.primary",
+              borderRadius: "4px",
+            }}
+          >
+            <MenuItem value="">Select an answer</MenuItem>
+            {options.map((option, index) => (
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          sx={{
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            padding: "10px 20px",
+          }}
+        >
+          Submit
+        </Button>
+
+        <Typography variant="body1" sx={{ marginTop: 4 }}>
+          Score: {score}
+        </Typography>
+      </Box>
+    </ThemeProvider>
   );
 }
