@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import rounds from "../../config/rounds";
 import {
   Container,
@@ -63,7 +64,14 @@ export default function GeographyRound() {
         setHint(teamRound.hint);
         setQuestion(teamRound.question);
         setAnswer(teamRound.answer);
-        setOptions(generateOptions(teamRound.answer));
+        setOptions([
+          "Blockchain Island",
+          "Zug",
+          "Token2049",
+          "2025",
+          "eNaira",
+          "Italian",
+        ]);
       } catch (error) {
         console.error("Error fetching data:", error);
         alert("Error fetching question data!");
@@ -73,10 +81,10 @@ export default function GeographyRound() {
     fetchQuestion();
   }, [roundNum]);
 
-  function generateOptions(correctAnswer) {
-    const randomOptions = ["Option1", "Option2", "Option3"];
-    return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
-  }
+  // function generateOptions(correctAnswer) {
+  //   const randomOptions = ["Option1", "Option2", "Option3"];
+  //   return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
+  // }
 
   async function handleSubmit() {
     const teamName = localStorage.getItem("teamName");
@@ -158,9 +166,9 @@ export default function GeographyRound() {
           <Typography variant="h6" color="text.secondary">
             Hint:
           </Typography>
-          <Typography variant="body1" color="text.primary">
-            {hint}
-          </Typography>
+          <div className="px-10 py-10">
+            <img src={hint || null} width={400} height={200} alt="Hint" />
+          </div>
         </Paper>
 
         <Paper
