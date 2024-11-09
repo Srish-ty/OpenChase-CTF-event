@@ -17,6 +17,7 @@ const theme = createTheme({
 export default function Navbar() {
   const [roundNum, setRoundNum] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // To track login state
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -29,6 +30,14 @@ export default function Navbar() {
 
       if (storedTotalScore) {
         setTotalScore(parseInt(storedTotalScore, 10));
+      }
+
+      const teamName = localStorage.getItem("teamName");
+      const password = localStorage.getItem("password");
+      const isAdminAuthenticated = localStorage.getItem("isAdminAuthenticated");
+
+      if (!teamName && !password && !isAdminAuthenticated) {
+        setIsLoggedIn(false);
       }
 
       const interval = setInterval(() => {
@@ -61,18 +70,33 @@ export default function Navbar() {
           py: 2,
         }}
       >
-        <Typography variant="body1">Round: {roundNum}</Typography>
-        <Typography variant="body1">Score: {totalScore}</Typography>
-        <Button
-          onClick={logout}
-          variant="contained"
-          color="error"
-          sx={{
-            fontWeight: "bold",
-          }}
-        >
-          Logout
-        </Button>
+        {isLoggedIn ? (
+          <>
+            <Typography variant="body1">Round: {roundNum}</Typography>
+            <Typography variant="body1">Score: {totalScore}</Typography>
+            <Button
+              onClick={logout}
+              variant="contained"
+              color="primary"
+              sx={{
+                fontWeight: "bold",
+              }}
+            >
+              Logout
+            </Button>
+          </>
+        ) : (
+          <Button
+            onClick={redirectToLogin}
+            variant="contained"
+            color="primary"
+            sx={{
+              fontWeight: "bold",
+            }}
+          >
+            Login
+          </Button>
+        )}
       </Box>
     </ThemeProvider>
   );
@@ -80,5 +104,9 @@ export default function Navbar() {
 
 const logout = () => {
   localStorage.clear();
+  window.location.href = "/login";
+};
+
+const redirectToLogin = () => {
   window.location.href = "/login";
 };
