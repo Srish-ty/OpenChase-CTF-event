@@ -25,6 +25,7 @@ export default function GeographyRound() {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [roundNum, setRoundNum] = useState(1);
+  const [solved, setSolved] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -84,9 +85,6 @@ export default function GeographyRound() {
   async function handleSubmit() {
     const teamName = localStorage.getItem("teamName");
     const color = localStorage.getItem("color");
-
-    console.log("Submitting answer:", selectedAnswer);
-    console.log("Correct answer:", answer);
 
     const answerCorrect = selectedAnswer === answer;
     const newScore = answerCorrect ? score + 50 : score - 20;
@@ -149,6 +147,7 @@ export default function GeographyRound() {
           Geography Round
         </Typography>
 
+        {/* Hint Box */}
         <Paper
           sx={{
             p: 3,
@@ -164,54 +163,71 @@ export default function GeographyRound() {
           <div className="px-10 py-10">
             <img src={hint || null} width={400} height={200} alt="Hint" />
           </div>
-        </Paper>
-
-        <Paper
-          sx={{
-            p: 3,
-            bgcolor: "background.default",
-            mb: 4,
-            borderRadius: 2,
-            boxShadow: 1,
-          }}
-        >
-          <Typography variant="h6" color="text.secondary">
-            Question:
-          </Typography>
           <Typography variant="body1" color="text.primary" mb={2}>
-            {question}
+            Solve the puzzle in real life, then submit here. Once done, click
+            below.
           </Typography>
-
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="answer-select-label" color="primary">
-              Select Answer
-            </InputLabel>
-            <Select
-              labelId="answer-select-label"
-              value={selectedAnswer}
-              onChange={(e) => setSelectedAnswer(e.target.value)}
-              label="Select Answer"
-              color="primary"
-            >
-              <MenuItem value="">Select an answer</MenuItem>
-              {options.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Button
+            onClick={() => setSolved(!solved)}
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            sx={{ mb: 2 }}
+          >
+            {solved ? "Not Solved Yet" : "Solved"}
+          </Button>
         </Paper>
 
-        <Button
-          onClick={handleSubmit}
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mb: 2 }}
-        >
-          Submit
-        </Button>
+        {solved && (
+          <Paper
+            sx={{
+              p: 3,
+              bgcolor: "background.default",
+              mb: 4,
+              borderRadius: 2,
+              boxShadow: 1,
+            }}
+          >
+            <Typography variant="h6" color="text.secondary">
+              Question:
+            </Typography>
+            <Typography variant="body1" color="text.primary" mb={2}>
+              {question}
+            </Typography>
+
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel id="answer-select-label" color="primary">
+                Select Answer
+              </InputLabel>
+              <Select
+                labelId="answer-select-label"
+                value={selectedAnswer}
+                onChange={(e) => setSelectedAnswer(e.target.value)}
+                label="Select Answer"
+                color="primary"
+              >
+                <MenuItem value="">Select an answer</MenuItem>
+                {options.map((option, index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Paper>
+        )}
+
+        {solved && (
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mb: 2 }}
+          >
+            Submit
+          </Button>
+        )}
 
         <Typography variant="h6" align="center">
           Score: {score}
