@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from "react";
 import rounds from "../../config/rounds";
+import {
+  Container,
+  Typography,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Box,
+} from "@mui/material";
 
 export default function CodingRound() {
   const [hint, setHint] = useState("");
@@ -28,7 +38,7 @@ export default function CodingRound() {
       return;
     }
 
-    if (roundNum < 2) {
+    if (roundNum !== 2) {
       const correctPath = `/${rounds[roundNum]}`;
       window.location.href = correctPath;
       return;
@@ -106,23 +116,101 @@ export default function CodingRound() {
   }
 
   return (
-    <div>
-      <h1>Geography Round</h1>
-      <p>Hint: {hint}</p>
-      <p>Question: {question}</p>
-      <select
-        value={selectedAnswer}
-        onChange={(e) => setSelectedAnswer(e.target.value)}
+    <Container
+      maxWidth="sm"
+      sx={{
+        bgcolor: "#121212",
+        color: "white",
+        p: 4,
+        borderRadius: 2,
+        boxShadow: 3,
+        mt: 8,
+      }}
+    >
+      <Typography variant="h4" gutterBottom align="center" color="primary">
+        Coding Round
+      </Typography>
+
+      <Box
+        sx={{
+          bgcolor: "#1e1e1e",
+          p: 3,
+          borderRadius: 2,
+          boxShadow: 1,
+          mb: 3,
+        }}
       >
-        <option value="">Select an answer</option>
-        {options.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleSubmit}>Submit</button>
-      <p>Score: {score}</p>
-    </div>
+        <Typography variant="h6" color="white">
+          Hint: {hint}
+        </Typography>
+      </Box>
+
+      <Box
+        sx={{
+          bgcolor: "#1e1e1e",
+          p: 3,
+          borderRadius: 2,
+          boxShadow: 1,
+          mb: 3,
+        }}
+      >
+        <Typography variant="h6" color="white">
+          Question: {question}
+        </Typography>
+
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel id="answer-select-label" sx={{ color: "white" }}>
+            Select Answer
+          </InputLabel>
+          <Select
+            labelId="answer-select-label"
+            value={selectedAnswer}
+            onChange={(e) => setSelectedAnswer(e.target.value)}
+            label="Select Answer"
+            sx={{
+              backgroundColor: "#333",
+              color: "white",
+              "& .MuiSelect-icon": {
+                color: "white",
+              },
+              "& .MuiMenuItem-root": {
+                color: "white",
+              },
+            }}
+          >
+            <MenuItem value="">Select an answer</MenuItem>
+            {options.map((option, index) => (
+              <MenuItem key={index} value={option} sx={{ color: "black" }}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          Submit
+        </Button>
+      </Box>
+
+      <Box
+        sx={{
+          bgcolor: "#1e1e1e",
+          p: 3,
+          borderRadius: 2,
+          boxShadow: 1,
+          mt: 3,
+        }}
+      >
+        <Typography variant="h6" align="center" color="white">
+          Score: {score}
+        </Typography>
+      </Box>
+    </Container>
   );
 }
