@@ -19,11 +19,14 @@ export default function Navbar() {
   const [roundNum, setRoundNum] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [currentRound, setCurrentRound] = useState();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedRoundNum = localStorage.getItem("roundNum");
       const storedTotalScore = localStorage.getItem("totalScore");
+      const storedRound = localStorage.getItem("roundNum");
+      storedRound && setCurrentRound(storedRound);
 
       if (storedRoundNum) {
         setRoundNum(storedRoundNum);
@@ -58,6 +61,30 @@ export default function Navbar() {
     }
   }, [roundNum, totalScore]);
 
+  const takeToLeaderboard = () => {
+    window.open("/leaderboard", "_blank");
+  };
+
+  const takeToRound = () => {
+    const roundIndex = parseInt(roundNum, 10);
+    const previousRoundPage = rounds[roundIndex - 1];
+
+    if (previousRoundPage) {
+      window.location.href = `/${previousRoundPage}`;
+    } else {
+      window.location.href = "/geo";
+    }
+  };
+
+  const logout = () => {
+    localStorage.clear();
+    window.location.href = "/login";
+  };
+
+  const redirectToLogin = () => {
+    window.location.href = "/login";
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -87,7 +114,11 @@ export default function Navbar() {
 
         {isLoggedIn ? (
           <>
-            <Typography variant="body1" className="text-gray-800 font-bold">
+            <Typography
+              variant="body1"
+              className="text-gray-800 font-bold underline hover:text-teal-200 cursor-pointer"
+              onClick={takeToRound}
+            >
               Round: {roundNum}
             </Typography>
             <Typography variant="body1" className="text-violet-500 font-bold">
@@ -120,20 +151,3 @@ export default function Navbar() {
     </ThemeProvider>
   );
 }
-
-const logout = () => {
-  localStorage.clear();
-  window.location.href = "/login";
-};
-
-const redirectToLogin = () => {
-  window.location.href = "/login";
-};
-
-const takeToLeaderboard = () => {
-  window.location.href = "/leaderboard";
-};
-
-const takeToRound = () => {
-  window.location.href = "/round";
-};
