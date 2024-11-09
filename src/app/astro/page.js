@@ -3,14 +3,14 @@
 import { useState, useEffect } from "react";
 import rounds from "../../config/rounds";
 
-export default function GeographyRound() {
+export default function AstroRound() {
   const [hint, setHint] = useState("");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [options, setOptions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
-  const [roundNum, setRoundNum] = useState(1);
+  const [roundNum, setRoundNum] = useState();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
