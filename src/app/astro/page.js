@@ -6,6 +6,7 @@ import rounds from "../../config/rounds";
 export default function GeographyRound() {
   const [hint, setHint] = useState("");
   const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
   const [options, setOptions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
@@ -41,6 +42,7 @@ export default function GeographyRound() {
 
         setHint(teamRound.hint);
         setQuestion(teamRound.question);
+        setAnswer(teamRound.answer);
         setOptions(generateOptions(teamRound.answer));
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -60,9 +62,12 @@ export default function GeographyRound() {
     const teamName = localStorage.getItem("teamName");
     const color = localStorage.getItem("color");
 
-    const answerCorrect = selectedAnswer === question.answer;
+    console.log("Submitting answer:", selectedAnswer);
+    console.log("Correct answer:", answer);
+
+    const answerCorrect = selectedAnswer == answer;
     const newScore = answerCorrect ? score + 50 : score - 20;
-    const nextRoundNum = answerCorrect ? roundNum + 1 : roundNum;
+    const nextRoundNum = answerCorrect ? 4 : 3;
 
     const response = await fetch("/api/score", {
       method: "POST",
@@ -81,6 +86,7 @@ export default function GeographyRound() {
       localStorage.setItem("totalScore", newScore);
       if (answerCorrect) {
         localStorage.setItem("roundNum", nextRoundNum);
+        localStorage.setItem("totalScore", newScore);
         alert("Answer correct! Moving to the next round.");
         window.location.href = `/${rounds[nextRoundNum]}`;
       } else {

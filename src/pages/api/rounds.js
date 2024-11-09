@@ -1,8 +1,8 @@
 import clientPromise from "../../lib/mongodb";
 
 export default async function handler(req, res) {
-  if (req.method === "GET") {
-    const { round } = req.query;
+  if (req.method === "POST") {
+    const { color, round } = req.body;
 
     try {
       const client = await clientPromise;
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
         return res.status(404).json({ message: "Round not found" });
       }
 
-      res.status(200).json(roundData);
+      res.status(200).json(roundData[color]);
     } catch (error) {
       console.error("Error fetching round data:", error);
       res.status(500).json({ message: "Error fetching round data" });

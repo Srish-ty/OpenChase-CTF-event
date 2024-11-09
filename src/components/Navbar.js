@@ -35,9 +35,20 @@ export default function Navbar() {
   }, [roundNum, totalScore]);
 
   return (
-    <nav className="bg-teal-500 py-7 px-20 pl-64 flex flex-row justify-evenly">
+    <nav className="bg-teal-500 py-7 px-20 pl-64 flex flex-row justify-evenly items-center">
       <span>Round: {roundNum}</span>
       <span>Score: {totalScore}</span>
+      <button
+        onClick={logout}
+        className="bg-red-400 text-white px-4 py-2 rounded"
+      >
+        Logout{" "}
+      </button>
     </nav>
   );
 }
+
+const logout = () => {
+  localStorage.clear();
+  window.location.href = "/login";
+};

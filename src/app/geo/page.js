@@ -6,6 +6,7 @@ import rounds from "../../config/rounds";
 export default function GeographyRound() {
   const [hint, setHint] = useState("");
   const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
   const [options, setOptions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
@@ -27,7 +28,7 @@ export default function GeographyRound() {
       return;
     }
 
-    if (roundNum !== 1) {
+    if (roundNum < 1) {
       const correctPath = `/${rounds[roundNum]}`;
       window.location.href = correctPath;
       return;
@@ -35,12 +36,20 @@ export default function GeographyRound() {
 
     async function fetchQuestion() {
       try {
-        const response = await fetch(`/api/rounds?round=geography`);
+        const response = await fetch(`/api/rounds`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ color, round: "geography" }),
+        });
+
         const data = await response.json();
-        const teamRound = data[color];
+        const teamRound = data;
 
         setHint(teamRound.hint);
         setQuestion(teamRound.question);
+        setAnswer(teamRound.answer);
         setOptions(generateOptions(teamRound.answer));
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -60,9 +69,12 @@ export default function GeographyRound() {
     const teamName = localStorage.getItem("teamName");
     const color = localStorage.getItem("color");
 
-    const answerCorrect = selectedAnswer === question.answer;
+    console.log("Submitting answer:", selectedAnswer);
+    console.log("Correct answer:", answer);
+
+    const answerCorrect = selectedAnswer == answer;
     const newScore = answerCorrect ? score + 50 : score - 20;
-    const nextRoundNum = answerCorrect ? roundNum + 1 : roundNum;
+    const nextRoundNum = answerCorrect ? 2 : 1;
 
     const response = await fetch("/api/score", {
       method: "POST",
@@ -81,6 +93,7 @@ export default function GeographyRound() {
       localStorage.setItem("totalScore", newScore);
       if (answerCorrect) {
         localStorage.setItem("roundNum", nextRoundNum);
+        localStorage.setItem("totalScore", newScore);
         alert("Answer correct! Moving to the next round.");
         window.location.href = `/${rounds[nextRoundNum]}`;
       } else {
