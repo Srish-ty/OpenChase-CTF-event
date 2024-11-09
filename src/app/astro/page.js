@@ -61,7 +61,14 @@ export default function AstroRound() {
         setHint(teamRound.hint);
         setQuestion(teamRound.question);
         setAnswer(teamRound.answer);
-        setOptions(generateOptions(teamRound.answer));
+        setOptions([
+          "Pablo Picasso",
+          "John F. Kennedy",
+          "Oscar Wilde",
+          "Mark Twain",
+          "George Eliot",
+          "Walt Disney",
+        ]);
       } catch (error) {
         console.error("Error fetching data:", error);
         alert("Error fetching question data!");
@@ -70,11 +77,6 @@ export default function AstroRound() {
 
     fetchQuestion();
   }, [roundNum]);
-
-  function generateOptions(correctAnswer) {
-    const randomOptions = ["Option1", "Option2", "Option3"];
-    return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
-  }
 
   async function handleSubmit() {
     const teamName = localStorage.getItem("teamName");
@@ -171,7 +173,11 @@ export default function AstroRound() {
           }}
         >
           <Typography variant="h6">Question:</Typography>
-          <Typography>{question}</Typography>
+          <Typography color="aqua">Guess the person from sentence</Typography>
+          <Typography>
+            Who wrote that line. Or whose dialogue is that sentence?
+          </Typography>
+
           <FormControl fullWidth variant="outlined" sx={{ marginTop: "20px" }}>
             <InputLabel sx={{ color: "white" }}>Select an answer</InputLabel>
             <Select
