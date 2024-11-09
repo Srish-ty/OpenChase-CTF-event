@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import rounds from "../../config/rounds";
 
 export default function CodingRound() {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
   const [hint, setHint] = useState("");
-  const [userAnswer, setUserAnswer] = useState("");
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState([]);
+  const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(
     parseInt(localStorage.getItem("totalScore")) || 0
   );
@@ -16,17 +17,16 @@ export default function CodingRound() {
 
   useEffect(() => {
     const teamName = localStorage.getItem("teamName");
-    const password = localStorage.getItem("password");
     const color = localStorage.getItem("color");
 
-    if (!teamName || !password || !color) {
+    if (!teamName || !color) {
       window.location.href = "/login";
       return;
     }
 
     if (roundNum !== 2) {
-      alert("You must complete the previous round to access this one.");
-      window.location.href = "/geo";
+      const correctPath = `/${rounds[roundNum]}`;
+      window.location.href = correctPath;
       return;
     }
 
@@ -34,15 +34,11 @@ export default function CodingRound() {
       try {
         const response = await fetch(`/api/rounds?round=coding`);
         const data = await response.json();
+        const teamRound = data[color];
 
-        if (data && data[color]) {
-          const { question, answer, hint } = data[color];
-          setQuestion(question);
-          setAnswer(answer);
-          setHint(hint);
-        } else {
-          alert("Error fetching question data.");
-        }
+        setHint(teamRound.hint);
+        setQuestion(teamRound.question);
+        setOptions(generateOptions(teamRound.answer));
       } catch (error) {
         console.error("Error fetching data:", error);
         alert("Error fetching question data!");
@@ -52,13 +48,18 @@ export default function CodingRound() {
     fetchQuestion();
   }, [roundNum]);
 
+  function generateOptions(correctAnswer) {
+    const randomOptions = ["OptionA", "OptionB", "OptionC"];
+    return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
+  }
+
   async function handleSubmit() {
     const teamName = localStorage.getItem("teamName");
     const color = localStorage.getItem("color");
 
-    const answerCorrect =
-      userAnswer.toLowerCase().trim() === answer.toLowerCase();
+    const answerCorrect = selectedAnswer === question.answer;
     const newScore = answerCorrect ? score + 50 : score - 10;
+    const nextRoundNum = answerCorrect ? roundNum + 1 : roundNum;
 
     const response = await fetch("/api/score", {
       method: "POST",
@@ -74,12 +75,11 @@ export default function CodingRound() {
     });
 
     if (response.ok) {
+      localStorage.setItem("totalScore", newScore);
       if (answerCorrect) {
+        localStorage.setItem("roundNum", nextRoundNum);
         alert("Answer correct! Moving to the next round.");
-        setRoundNum(roundNum + 1);
-        localStorage.setItem("roundNum", roundNum + 1);
-        localStorage.setItem("totalScore", newScore);
-        window.location.href = "/astro";
+        window.location.href = `/${rounds[nextRoundNum]}`;
       } else {
         alert("Incorrect answer. Try again!");
       }
@@ -92,15 +92,21 @@ export default function CodingRound() {
   return (
     <div>
       <h1>Coding Round</h1>
+      <p>Hint: {hint}</p>
       <p>Question: {question}</p>
-      <input
-        type="text"
-        value={userAnswer}
-        onChange={(e) => setUserAnswer(e.target.value)}
-      />
+      <select
+        value={selectedAnswer}
+        onChange={(e) => setSelectedAnswer(e.target.value)}
+      >
+        <option value="">Select an answer</option>
+        {options.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
       <button onClick={handleSubmit}>Submit</button>
       <p>Score: {score}</p>
-      {hint && <p>Hint: {hint}</p>}
     </div>
   );
 }

@@ -1,61 +1,113 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import rounds from "../../config/rounds";
 
-export default function GeographyRound() {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [score, setScore] = useState(0);
+export default function AstronomyRound() {
   const [hint, setHint] = useState("");
-  const [correctAnswer, setCorrectAnswer] = useState("");
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState([]);
+  const [selectedAnswer, setSelectedAnswer] = useState("");
+  const [score, setScore] = useState(
+    parseInt(localStorage.getItem("totalScore")) || 0
+  );
+  const [roundNum, setRoundNum] = useState(
+    parseInt(localStorage.getItem("roundNum")) || 1
+  );
 
   useEffect(() => {
     const teamName = localStorage.getItem("teamName");
-    const password = localStorage.getItem("password");
-    const track = localStorage.getItem("track");
+    const color = localStorage.getItem("color");
 
-    if (!teamName || !password || !track) {
+    if (!teamName || !color) {
       window.location.href = "/login";
       return;
     }
 
-    async function fetchQuestion() {
-      const response = await fetch(`/api/rounds?round=astronomy`);
-      const data = await response.json();
+    if (roundNum !== 3) {
+      const correctPath = `/${rounds[roundNum]}`;
+      window.location.href = correctPath;
+      return;
+    }
 
-      if (track === "1") {
-        setQuestion(data.track1.question);
-        setCorrectAnswer(data.track1.answer);
-      } else if (track === "2") {
-        setQuestion(data.track2.question);
-        setCorrectAnswer(data.track2.answer);
+    async function fetchQuestion() {
+      try {
+        const response = await fetch(`/api/rounds?round=astronomy`);
+        const data = await response.json();
+        const teamRound = data[color];
+
+        setHint(teamRound.hint);
+        setQuestion(teamRound.question);
+        setOptions(generateOptions(teamRound.answer));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        alert("Error fetching question data!");
       }
     }
 
     fetchQuestion();
-  }, []);
+  }, [roundNum]);
+
+  function generateOptions(correctAnswer) {
+    const randomOptions = ["Option1", "Option2", "Option3"];
+    const options = [...randomOptions, correctAnswer];
+    return options.sort(() => Math.random() - 0.5);
+  }
 
   async function handleSubmit() {
-    if (answer === correctAnswer) {
-      setScore((prev) => prev + 50);
-      setHint("Here's a hint for the next round!");
+    const teamName = localStorage.getItem("teamName");
+    const color = localStorage.getItem("color");
+
+    const answerCorrect = selectedAnswer === question.answer;
+    const newScore = answerCorrect ? score + 50 : score - 10;
+    const nextRoundNum = answerCorrect ? roundNum + 1 : roundNum;
+
+    const response = await fetch("/api/score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        teamName,
+        answerCorrect,
+        color,
+        roundNum,
+      }),
+    });
+
+    if (response.ok) {
+      localStorage.setItem("totalScore", newScore);
+      if (answerCorrect) {
+        localStorage.setItem("roundNum", nextRoundNum);
+        alert("Answer correct! Moving to the next round.");
+        window.location.href = `/${rounds[nextRoundNum]}`;
+      } else {
+        alert("Incorrect answer. Try again!");
+      }
+      setScore(newScore);
     } else {
-      setScore((prev) => prev - 10);
+      alert("Error updating score.");
     }
   }
 
   return (
     <div>
-      <h1>Geography Round</h1>
+      <h1>Astronomy Round</h1>
+      <p>Hint: {hint}</p>
       <p>Question: {question}</p>
-      <input
-        type="text"
-        value={answer}
-        onChange={(e) => setAnswer(e.target.value)}
-      />
+      <select
+        value={selectedAnswer}
+        onChange={(e) => setSelectedAnswer(e.target.value)}
+      >
+        <option value="">Select an answer</option>
+        {options.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
       <button onClick={handleSubmit}>Submit</button>
       <p>Score: {score}</p>
-      {hint && <p>Hint: {hint}</p>}
     </div>
   );
 }

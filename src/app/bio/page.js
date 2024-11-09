@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import rounds from "../../config/rounds";
 
-export default function GeographyRound() {
+export default function BiologyRound() {
   const [hint, setHint] = useState("");
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
@@ -24,7 +24,7 @@ export default function GeographyRound() {
       return;
     }
 
-    if (roundNum !== 1) {
+    if (roundNum !== 4) {
       const correctPath = `/${rounds[roundNum]}`;
       window.location.href = correctPath;
       return;
@@ -32,7 +32,7 @@ export default function GeographyRound() {
 
     async function fetchQuestion() {
       try {
-        const response = await fetch(`/api/rounds?round=geography`);
+        const response = await fetch(`/api/rounds?round=biology`);
         const data = await response.json();
         const teamRound = data[color];
 
@@ -49,9 +49,8 @@ export default function GeographyRound() {
   }, [roundNum]);
 
   function generateOptions(correctAnswer) {
-    const randomOptions = ["Option1", "Option2", "Option3"];
-    const options = [...randomOptions, correctAnswer];
-    return options.sort(() => Math.random() - 0.5);
+    const randomOptions = ["OptionX", "OptionY", "OptionZ"];
+    return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
   }
 
   async function handleSubmit() {
@@ -92,7 +91,7 @@ export default function GeographyRound() {
 
   return (
     <div>
-      <h1>Geography Round</h1>
+      <h1>Biology Round</h1>
       <p>Hint: {hint}</p>
       <p>Question: {question}</p>
       <select
