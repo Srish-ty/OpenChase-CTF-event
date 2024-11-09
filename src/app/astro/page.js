@@ -142,9 +142,11 @@ export default function AstroRound() {
         }}
       >
         <Typography variant="h6">Hint:</Typography>
-        <Typography color="aqua">May the "Stars" guide your path ✨</Typography>
+        <Typography color="aqua">
+          May the &quot;Stars&quot; guide your path ✨
+        </Typography>
         <Typography sx={{ marginTop: "10px" }}>
-          1. Find the stars. <br /> 2. You'll get next puzzle there
+          1. Find the stars. <br /> 2. You&apos;ll get next puzzle there
         </Typography>
         <Button
           variant="outlined"
