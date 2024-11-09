@@ -2,6 +2,19 @@
 
 import { useState, useEffect } from "react";
 import rounds from "../../config/rounds";
+import {
+  Container,
+  Typography,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Box,
+  Paper,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
 
 export default function GeographyRound() {
   const [hint, setHint] = useState("");
@@ -28,7 +41,7 @@ export default function GeographyRound() {
       return;
     }
 
-    if (roundNum < 1) {
+    if (roundNum !== 1) {
       const correctPath = `/${rounds[roundNum]}`;
       window.location.href = correctPath;
       return;
@@ -72,7 +85,7 @@ export default function GeographyRound() {
     console.log("Submitting answer:", selectedAnswer);
     console.log("Correct answer:", answer);
 
-    const answerCorrect = selectedAnswer == answer;
+    const answerCorrect = selectedAnswer === answer;
     const newScore = answerCorrect ? score + 50 : score - 20;
     const nextRoundNum = answerCorrect ? 2 : 1;
 
@@ -93,7 +106,6 @@ export default function GeographyRound() {
       localStorage.setItem("totalScore", newScore);
       if (answerCorrect) {
         localStorage.setItem("roundNum", nextRoundNum);
-        localStorage.setItem("totalScore", newScore);
         alert("Answer correct! Moving to the next round.");
         window.location.href = `/${rounds[nextRoundNum]}`;
       } else {
@@ -105,24 +117,103 @@ export default function GeographyRound() {
     }
   }
 
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+      primary: {
+        main: "#bb86fc",
+      },
+      secondary: {
+        main: "#03dac6",
+      },
+    },
+  });
+
   return (
-    <div>
-      <h1>Geography Round</h1>
-      <p>Hint: {hint}</p>
-      <p>Question: {question}</p>
-      <select
-        value={selectedAnswer}
-        onChange={(e) => setSelectedAnswer(e.target.value)}
+    <ThemeProvider theme={darkTheme}>
+      <Container
+        maxWidth="sm"
+        sx={{
+          bgcolor: "background.paper",
+          color: "text.primary",
+          p: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+          mt: 8,
+        }}
       >
-        <option value="">Select an answer</option>
-        {options.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleSubmit}>Submit</button>
-      <p>Score: {score}</p>
-    </div>
+        <Typography variant="h4" gutterBottom align="center" color="primary">
+          Geography Round
+        </Typography>
+
+        <Paper
+          sx={{
+            p: 3,
+            bgcolor: "background.default",
+            mb: 4,
+            borderRadius: 2,
+            boxShadow: 1,
+          }}
+        >
+          <Typography variant="h6" color="text.secondary">
+            Hint:
+          </Typography>
+          <Typography variant="body1" color="text.primary">
+            {hint}
+          </Typography>
+        </Paper>
+
+        <Paper
+          sx={{
+            p: 3,
+            bgcolor: "background.default",
+            mb: 4,
+            borderRadius: 2,
+            boxShadow: 1,
+          }}
+        >
+          <Typography variant="h6" color="text.secondary">
+            Question:
+          </Typography>
+          <Typography variant="body1" color="text.primary" mb={2}>
+            {question}
+          </Typography>
+
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="answer-select-label" color="primary">
+              Select Answer
+            </InputLabel>
+            <Select
+              labelId="answer-select-label"
+              value={selectedAnswer}
+              onChange={(e) => setSelectedAnswer(e.target.value)}
+              label="Select Answer"
+              color="primary"
+            >
+              <MenuItem value="">Select an answer</MenuItem>
+              {options.map((option, index) => (
+                <MenuItem key={index} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Paper>
+
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          Submit
+        </Button>
+
+        <Typography variant="h6" align="center">
+          Score: {score}
+        </Typography>
+      </Container>
+    </ThemeProvider>
   );
 }
