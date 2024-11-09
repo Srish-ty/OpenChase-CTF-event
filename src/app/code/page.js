@@ -28,7 +28,7 @@ export default function GeographyRound() {
       return;
     }
 
-    if (roundNum !== 2) {
+    if (roundNum < 2) {
       const correctPath = `/${rounds[roundNum]}`;
       window.location.href = correctPath;
       return;
@@ -36,9 +36,16 @@ export default function GeographyRound() {
 
     async function fetchQuestion() {
       try {
-        const response = await fetch(`/api/rounds?round=coding`);
+        const response = await fetch(`/api/rounds`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ color, round: "coding" }),
+        });
+
         const data = await response.json();
-        const teamRound = data[color];
+        const teamRound = data;
 
         setHint(teamRound.hint);
         setQuestion(teamRound.question);
