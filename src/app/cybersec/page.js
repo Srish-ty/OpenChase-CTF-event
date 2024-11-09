@@ -105,7 +105,7 @@ export default function CyberRound() {
         setCompleted(true);
         localStorage.setItem("completed", true);
       } else {
-        alert("Incorrect answer. Try again!");
+        alert("Incorrect answer. -20 .Try again!");
       }
       setScore(newScore);
     } else {

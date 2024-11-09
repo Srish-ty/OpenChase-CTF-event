@@ -107,7 +107,7 @@ export default function AstroRound() {
         alert("Answer correct! Moving to the next round.");
         window.location.href = `/${rounds[nextRoundNum]}`;
       } else {
-        alert("Incorrect answer. Try again!");
+        alert("Incorrect answer. -20 .Try again!");
       }
       setScore(newScore);
     } else {
@@ -142,10 +142,9 @@ export default function AstroRound() {
         }}
       >
         <Typography variant="h6">Hint:</Typography>
-        <Typography color="aqua">{hint}</Typography>
+        <Typography color="aqua">May the "Stars" guide your path ✨</Typography>
         <Typography sx={{ marginTop: "10px" }}>
-          Solve the puzzle in real life, then submit here. Once done, click
-          below:
+          1. Find the stars. <br /> 2. You'll get next puzzle there
         </Typography>
         <Button
           variant="outlined"

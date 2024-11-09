@@ -110,7 +110,7 @@ export default function GeographyRound() {
         alert("Answer correct! Moving to the next round.");
         window.location.href = `/${rounds[nextRoundNum]}`;
       } else {
-        alert("Incorrect answer. Try again!");
+        alert("Incorrect answer. -20 .Try again!");
       }
       setScore(newScore);
     } else {
