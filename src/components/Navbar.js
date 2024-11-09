@@ -72,8 +72,12 @@ export default function Navbar() {
       >
         {isLoggedIn ? (
           <>
-            <Typography variant="body1">Round: {roundNum}</Typography>
-            <Typography variant="body1">Score: {totalScore}</Typography>
+            <Typography variant="body1" className="text-gray-800 font-bold">
+              Round: {roundNum}
+            </Typography>
+            <Typography variant="body1" className="text-violet-500 font-bold">
+              Score: {totalScore}
+            </Typography>
             <Button
               onClick={logout}
               variant="contained"
