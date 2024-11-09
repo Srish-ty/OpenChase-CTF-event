@@ -31,6 +31,7 @@ export default function AstroRound() {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [roundNum, setRoundNum] = useState();
+  const [showQuestion, setShowQuestion] = useState(false); // New state for toggling
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -70,7 +71,14 @@ export default function AstroRound() {
         setHint(teamRound.hint);
         setQuestion(teamRound.question);
         setAnswer(teamRound.answer);
-        setOptions(generateOptions(teamRound.answer));
+        setOptions([
+          "ASHOKA",
+          "CAESAR",
+          "KANISHKA",
+          "SENECA",
+          "BISMARCK",
+          "AUGUSTUS",
+        ]);
       } catch (error) {
         console.error("Error fetching data:", error);
         alert("Error fetching question data!");
@@ -79,11 +87,6 @@ export default function AstroRound() {
 
     fetchQuestion();
   }, [roundNum]);
-
-  function generateOptions(correctAnswer) {
-    const randomOptions = ["Option1", "Option2", "Option3"];
-    return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
-  }
 
   async function handleSubmit() {
     const teamName = localStorage.getItem("teamName");
@@ -129,7 +132,7 @@ export default function AstroRound() {
     <ThemeProvider theme={theme}>
       <Box
         sx={{
-          bgcolor: "background.default",
+          bgcolor: "black",
           color: "text.primary",
           display: "flex",
           flexDirection: "column",
@@ -153,7 +156,7 @@ export default function AstroRound() {
 
         <Box
           sx={{
-            bgcolor: "paper",
+            bgcolor: "grey.900",
             color: "text.primary",
             padding: 3,
             marginBottom: 3,
@@ -162,60 +165,93 @@ export default function AstroRound() {
             borderRadius: "8px",
           }}
         >
-          <Typography variant="body1" sx={{ marginBottom: 2 }}>
-            Hint: {hint}
+          <Typography variant="body1" sx={{ marginBottom: 2 }} color="violet">
+            Hint:
           </Typography>
-        </Box>
+          <ul className="py-4 pb-8">
+            <li>1. Know the Creature from below link</li>
 
-        <Box
-          sx={{
-            bgcolor: "paper",
-            color: "text.primary",
-            padding: 3,
-            marginBottom: 3,
-            width: "100%",
-            maxWidth: "500px",
-            borderRadius: "8px",
-          }}
-        >
-          <Typography variant="body1" sx={{ marginBottom: 2 }}>
-            Question: {question}
-          </Typography>
-        </Box>
+            <Typography variant="body1">
+              2.
+              <a
+                href={hint}
+                className="text-teal-500 underline"
+                target="_blank"
+              >
+                Click here
+              </a>
+            </Typography>
 
-        <FormControl sx={{ marginBottom: 3, minWidth: 200 }}>
-          <InputLabel>Select an answer</InputLabel>
-          <Select
-            value={selectedAnswer}
-            onChange={(e) => setSelectedAnswer(e.target.value)}
-            label="Select an answer"
-            sx={{
-              backgroundColor: "background.paper",
-              color: "text.primary",
-              borderRadius: "4px",
-            }}
+            <li>
+              3. Find the creature in Lawn Space located at the centre of LA
+            </li>
+            <li>4. Scan QR below it. Recognise the sounds.</li>
+            <li>5. Using first letter of each, Guess the Acronym</li>
+          </ul>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => setShowQuestion((prev) => !prev)}
           >
-            <MenuItem value="">Select an answer</MenuItem>
-            {options.map((option, index) => (
-              <MenuItem key={index} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            {showQuestion ? "Hide Question" : "Show Question"}
+          </Button>
+        </Box>
 
-        <Button
-          onClick={handleSubmit}
-          variant="contained"
-          color="primary"
-          sx={{
-            fontWeight: "bold",
-            fontSize: "1.2rem",
-            padding: "10px 20px",
-          }}
-        >
-          Submit
-        </Button>
+        {showQuestion && (
+          <div className="bg-zinc-800 rounded-xl w-[80%] px-2 md:px-[30%] py-10 md:py-5">
+            <Box
+              sx={{
+                color: "text.primary",
+                padding: 3,
+                width: "100%",
+                maxWidth: "500px",
+                borderRadius: "8px",
+              }}
+            >
+              <Typography variant="body1" color="violet">
+                Question:
+              </Typography>
+              <Typography variant="body1" color="white">
+                From the initials of those ancient Egyptian sounds, guess the
+                Acronym which gives name of an Emperor
+              </Typography>
+            </Box>
+
+            <FormControl sx={{ marginBottom: 3, minWidth: 200 }}>
+              <InputLabel>Select an answer</InputLabel>
+              <Select
+                value={selectedAnswer}
+                onChange={(e) => setSelectedAnswer(e.target.value)}
+                label="Select an answer"
+                sx={{
+                  backgroundColor: "background.paper",
+                  color: "text.primary",
+                  borderRadius: "4px",
+                }}
+              >
+                <MenuItem value="">Select an answer</MenuItem>
+                {options.map((option, index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              color="primary"
+              sx={{
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+                padding: "10px 20px",
+              }}
+            >
+              Submit
+            </Button>
+          </div>
+        )}
 
         <Typography variant="body1" sx={{ marginTop: 4 }}>
           Score: {score}
