@@ -28,7 +28,7 @@ export default function CyberRound() {
       return;
     }
 
-    if (roundNum !== 5) {
+    if (roundNum < 5) {
       const correctPath = `/${rounds[roundNum]}`;
       window.location.href = correctPath;
       return;
@@ -74,7 +74,7 @@ export default function CyberRound() {
 
     const answerCorrect = selectedAnswer == answer;
     const newScore = answerCorrect ? score + 50 : score - 20;
-    const nextRoundNum = 5;
+    const nextRoundNum = answerCorrect ? 6 : 5;
 
     const response = await fetch("/api/score", {
       method: "POST",
