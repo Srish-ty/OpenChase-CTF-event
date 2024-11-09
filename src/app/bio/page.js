@@ -117,10 +117,10 @@ export default function AstroRound() {
       if (answerCorrect) {
         localStorage.setItem("roundNum", nextRoundNum);
         localStorage.setItem("totalScore", newScore);
-        alert("Answer correct! Moving to the next round.");
+        alert("Answer correct!  +50 . Moving to the next round.");
         window.location.href = `/${rounds[nextRoundNum]}`;
       } else {
-        alert("Incorrect answer. -20 .Try again!");
+        alert("Incorrect answer. -20 . Try again!");
       }
       setScore(newScore);
     } else {
