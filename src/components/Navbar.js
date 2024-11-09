@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button, Box, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import rounds from "@/config/rounds";
 
 const theme = createTheme({
   palette: {
@@ -17,7 +18,7 @@ const theme = createTheme({
 export default function Navbar() {
   const [roundNum, setRoundNum] = useState(null);
   const [totalScore, setTotalScore] = useState(0);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // To track login state
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -70,6 +71,20 @@ export default function Navbar() {
           py: 2,
         }}
       >
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={takeToLeaderboard}
+          sx={{
+            fontWeight: "bold",
+            color: "purple",
+            borderColor: "purple",
+            borderRadius: "8px",
+          }}
+        >
+          Leaderboard
+        </Button>
+
         {isLoggedIn ? (
           <>
             <Typography variant="body1" className="text-gray-800 font-bold">
@@ -113,4 +128,12 @@ const logout = () => {
 
 const redirectToLogin = () => {
   window.location.href = "/login";
+};
+
+const takeToLeaderboard = () => {
+  window.location.href = "/leaderboard";
+};
+
+const takeToRound = () => {
+  window.location.href = "/round";
 };
