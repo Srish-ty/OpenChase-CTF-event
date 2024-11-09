@@ -5,16 +5,14 @@ export default async function handler(req, res) {
   const db = client.db("openchase");
 
   if (req.method === "POST") {
-    const { teamName, password, group, totalScore, checkpoints, track } =
-      req.body;
+    const { teamName, password, color, totalScore, roundNum } = req.body;
 
     const newTeam = {
       teamName,
       password,
-      group,
+      color,
       totalScore: totalScore || 0,
-      checkpoints: checkpoints || [false, false, false],
-      track: Math.floor(Math.random() * 2) + 1,
+      roundNum: roundNum || 1,
     };
 
     try {

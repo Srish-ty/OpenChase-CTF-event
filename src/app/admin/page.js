@@ -1,11 +1,13 @@
-// app/admin/page.js
 "use client";
+import { colors } from "@/config/colors";
 import { useState } from "react";
 
 export default function AdminPage() {
   const [teamName, setTeamName] = useState("");
   const [password, setPassword] = useState("");
-  const [group, setGroup] = useState("red");
+  const [color, setColor] = useState("orange");
+  const [totalScore, setTotalScore] = useState(0);
+  const [roundNum, setRoundNum] = useState(1);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -13,7 +15,7 @@ export default function AdminPage() {
     const res = await fetch("/api/teams", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ teamName, password, group }),
+      body: JSON.stringify({ teamName, password, color, totalScore, roundNum }),
     });
 
     const data = await res.json();
@@ -21,7 +23,9 @@ export default function AdminPage() {
       alert("Team created successfully!");
       setTeamName("");
       setPassword("");
-      setGroup("red");
+      setColor("orange");
+      setTotalScore(0);
+      setRoundNum(1);
     } else {
       alert("Error creating team");
     }
@@ -48,11 +52,13 @@ export default function AdminPage() {
           />
         </label>
         <label>
-          Group:
-          <select value={group} onChange={(e) => setGroup(e.target.value)}>
-            <option value="red">Red</option>
-            <option value="blue">Blue</option>
-            <option value="green">Green</option>
+          Color:
+          <select value={color} onChange={(e) => setColor(e.target.value)}>
+            {colors.map((color) => (
+              <option key={color.value} value={color.value}>
+                {color.name}
+              </option>
+            ))}
           </select>
         </label>
         <button type="submit">Create Team</button>
