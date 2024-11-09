@@ -20,8 +20,7 @@ export default function CodingRound() {
   const [options, setOptions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
-  const currentRound = parseInt(localStorage.getItem("roundNum"));
-  const [roundNum, setRoundNum] = useState(currentRound);
+  const [roundNum, setRoundNum] = useState(1);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -29,54 +28,51 @@ export default function CodingRound() {
       const savedRoundNum = parseInt(localStorage.getItem("roundNum")) || 1;
       setScore(savedScore);
       setRoundNum(savedRoundNum);
-    }
 
-    const teamName = localStorage.getItem("teamName");
-    const color = localStorage.getItem("color");
+      const teamName = localStorage.getItem("teamName");
+      const color = localStorage.getItem("color");
 
-    if (!teamName || !color) {
-      window.location.href = "/login";
-      return;
-    }
-
-    if (roundNum !== 2) {
-      const correctPath = `/${rounds[roundNum]}`;
-      window.location.href = correctPath;
-      return;
-    }
-
-    async function fetchQuestion() {
-      try {
-        const response = await fetch(`/api/rounds`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ color, round: "coding" }),
-        });
-
-        const data = await response.json();
-        const teamRound = data;
-
-        setHint(teamRound.hint);
-        setQuestion(teamRound.question);
-        setAnswer(teamRound.answer);
-        setOptions(["101", "108", "116", "109", "117", "114"]);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        alert("Error fetching question data!");
+      if (!teamName || !color) {
+        window.location.href = "/login";
+        return;
       }
-    }
 
-    fetchQuestion();
+      if (savedRoundNum !== 2) {
+        const correctPath = `/${rounds[savedRoundNum]}`;
+        window.location.href = correctPath;
+        return;
+      }
+
+      async function fetchQuestion() {
+        try {
+          const response = await fetch(`/api/rounds`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ color, round: "coding" }),
+          });
+
+          const data = await response.json();
+          setHint(data.hint);
+          setQuestion(data.question);
+          setAnswer(data.answer);
+          setOptions(["101", "108", "116", "109", "117", "114"]);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          alert("Error fetching question data!");
+        }
+      }
+
+      fetchQuestion();
+    }
   }, []);
 
   async function handleSubmit() {
+    if (typeof window === "undefined") return;
+
     const teamName = localStorage.getItem("teamName");
     const color = localStorage.getItem("color");
-
-    console.log("Submitting answer:", selectedAnswer);
-    console.log("Correct answer:", answer);
 
     const answerCorrect = selectedAnswer == answer;
     const newScore = answerCorrect ? score + 50 : score - 20;
@@ -99,11 +95,10 @@ export default function CodingRound() {
       localStorage.setItem("totalScore", newScore);
       if (answerCorrect) {
         localStorage.setItem("roundNum", nextRoundNum);
-        localStorage.setItem("totalScore", newScore);
-        alert("Answer correct!  +50 . Moving to the next round.");
+        alert("Answer correct!  +50. Moving to the next round.");
         window.location.href = `/${rounds[nextRoundNum]}`;
       } else {
-        alert("Incorrect answer. -20 . Try again!");
+        alert("Incorrect answer. -20. Try again!");
       }
       setScore(newScore);
     } else {
