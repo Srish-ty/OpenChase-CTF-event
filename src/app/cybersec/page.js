@@ -62,7 +62,7 @@ export default function CyberRound() {
         setHint(teamRound.hint);
         setQuestion(teamRound.question);
         setAnswer(teamRound.answer);
-        setOptions(["101", "108", "116", "109", "117", "114"]);
+        setOptions(["red", "blue", "green", "yellow", "violet", "orange"]);
       } catch (error) {
         console.error("Error fetching data:", error);
         alert("Error fetching question data!");
@@ -138,7 +138,7 @@ export default function CyberRound() {
           Hint:
         </Typography>
         <Typography variant="body1" color="white">
-          {hint}
+          Go to room no. 301.
         </Typography>
       </Box>
 
@@ -154,7 +154,8 @@ export default function CyberRound() {
           Question:
         </Typography>
         <Typography variant="body1" color="white">
-          {question}
+          Knock the door. <br />
+          Solve the puzzle asked by Goblin inside. Then submit here.
         </Typography>
       </Box>
 
