@@ -18,20 +18,15 @@ export default function LoginPage() {
     if (response.ok) {
       const teamData = await response.json();
 
-      const { group, track } = teamData;
+      const { color, totalScore, roundNum } = teamData;
 
       localStorage.setItem("teamName", teamName);
       localStorage.setItem("password", password);
-      localStorage.setItem("track", track);
-      localStorage.setItem("teamGroup", group);
+      localStorage.setItem("color", color);
+      localStorage.setItem("totalScore", totalScore);
+      localStorage.setItem("roundNum", roundNum);
 
-      if (group === "red") {
-        window.location.href = "/geo";
-      } else if (group === "blue") {
-        window.location.href = "/astro";
-      } else if (group === "green") {
-        window.location.href = "/music";
-      }
+      window.location.href = "/geo";
     } else {
       alert("Invalid login credentials");
     }

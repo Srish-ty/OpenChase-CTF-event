@@ -20,11 +20,9 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav>
-      <ul>
-        <li>Round: {roundNum}</li>
-        <li>Score: {totalScore}</li>
-      </ul>
+    <nav className="bg-teal-500 py-7 px-20 pl-64 flex flex-row justify-evenly">
+      <span>Round: {roundNum}</span>
+      <span>Score: {totalScore}</span>
     </nav>
   );
 }

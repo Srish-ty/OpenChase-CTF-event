@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-export default function GeographyRound() {
+export default function CodingRound() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [hint, setHint] = useState("");
@@ -24,9 +24,15 @@ export default function GeographyRound() {
       return;
     }
 
+    if (roundNum !== 2) {
+      alert("You must complete the previous round to access this one.");
+      window.location.href = "/geo";
+      return;
+    }
+
     async function fetchQuestion() {
       try {
-        const response = await fetch(`/api/rounds?round=geography`);
+        const response = await fetch(`/api/rounds?round=coding`);
         const data = await response.json();
 
         if (data && data[color]) {
@@ -44,7 +50,7 @@ export default function GeographyRound() {
     }
 
     fetchQuestion();
-  }, []);
+  }, [roundNum]);
 
   async function handleSubmit() {
     const teamName = localStorage.getItem("teamName");
@@ -73,7 +79,7 @@ export default function GeographyRound() {
         setRoundNum(roundNum + 1);
         localStorage.setItem("roundNum", roundNum + 1);
         localStorage.setItem("totalScore", newScore);
-        window.location.href = "/code";
+        window.location.href = "/astro";
       } else {
         alert("Incorrect answer. Try again!");
       }
@@ -85,7 +91,7 @@ export default function GeographyRound() {
 
   return (
     <div>
-      <h1>Geography Round</h1>
+      <h1>Coding Round</h1>
       <p>Question: {question}</p>
       <input
         type="text"
