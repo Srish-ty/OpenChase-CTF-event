@@ -6,12 +6,13 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     const { teamName, password } = req.body;
+
     const team = await db.collection("teams").findOne({ teamName });
 
     if (team && password === team.password) {
-      res
-        .status(200)
-        .json({ success: true, group: team.group, track: team.track });
+      const { color, totalScore = 0, roundNum = 1 } = team;
+
+      res.status(200).json({ success: true, color, totalScore, roundNum });
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
     }

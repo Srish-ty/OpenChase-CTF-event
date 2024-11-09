@@ -8,14 +8,17 @@ export default function GeographyRound() {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState("");
-  const [score, setScore] = useState(
-    parseInt(localStorage.getItem("totalScore")) || 0
-  );
-  const [roundNum, setRoundNum] = useState(
-    parseInt(localStorage.getItem("roundNum")) || 1
-  );
+  const [score, setScore] = useState(0);
+  const [roundNum, setRoundNum] = useState(1);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedScore = parseInt(localStorage.getItem("totalScore")) || 0;
+      const savedRoundNum = parseInt(localStorage.getItem("roundNum")) || 1;
+      setScore(savedScore);
+      setRoundNum(savedRoundNum);
+    }
+
     const teamName = localStorage.getItem("teamName");
     const color = localStorage.getItem("color");
 
@@ -50,8 +53,7 @@ export default function GeographyRound() {
 
   function generateOptions(correctAnswer) {
     const randomOptions = ["Option1", "Option2", "Option3"];
-    const options = [...randomOptions, correctAnswer];
-    return options.sort(() => Math.random() - 0.5);
+    return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
   }
 
   async function handleSubmit() {
@@ -59,7 +61,7 @@ export default function GeographyRound() {
     const color = localStorage.getItem("color");
 
     const answerCorrect = selectedAnswer === question.answer;
-    const newScore = answerCorrect ? score + 50 : score - 10;
+    const newScore = answerCorrect ? score + 50 : score - 20;
     const nextRoundNum = answerCorrect ? roundNum + 1 : roundNum;
 
     const response = await fetch("/api/score", {

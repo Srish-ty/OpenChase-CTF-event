@@ -2,7 +2,7 @@ import clientPromise from "../../lib/mongodb";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { teamName, answerCorrect } = req.body;
+    const { teamName, answerCorrect, color, roundNum } = req.body;
     const client = await clientPromise;
     const db = client.db("openchase");
 
@@ -12,31 +12,31 @@ export default async function handler(req, res) {
       if (!team) {
         return res.status(404).json({ message: "Team not found" });
       }
-      const roundNum = team.roundNum;
 
-      let newScore = team.score;
+      let newScore = team.totalScore || 0;
+      let currentRound = team.roundNum || 1;
 
       if (answerCorrect) {
         newScore += 50;
+        currentRound += 1;
       } else {
-        newScore -= 10;
+        newScore -= 20;
       }
 
-      await db
-        .collection("teams")
-        .updateOne({ teamName }, { $set: { score: newScore } });
-
-      const newCheckpoints = [...team.checkpoints];
-      newCheckpoints[roundNum - 1] = true;
-
-      await db
-        .collection("teams")
-        .updateOne({ teamName }, { $set: { checkpoints: newCheckpoints } });
+      await db.collection("teams").updateOne(
+        { teamName },
+        {
+          $set: {
+            totalScore: newScore,
+            roundNum: currentRound,
+          },
+        }
+      );
 
       res.status(200).json({
-        message: "Score and checkpoints updated successfully",
+        message: "Score and round updated successfully",
         newScore,
-        newCheckpoints,
+        currentRound,
       });
     } catch (error) {
       console.error("Error updating score:", error);
