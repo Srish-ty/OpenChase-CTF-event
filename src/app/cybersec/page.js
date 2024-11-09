@@ -62,7 +62,7 @@ export default function CyberRound() {
         setHint(teamRound.hint);
         setQuestion(teamRound.question);
         setAnswer(teamRound.answer);
-        setOptions(generateOptions(teamRound.answer));
+        setOptions(["101", "108", "116", "109", "117", "114"]);
       } catch (error) {
         console.error("Error fetching data:", error);
         alert("Error fetching question data!");
@@ -71,11 +71,6 @@ export default function CyberRound() {
 
     fetchQuestion();
   }, [roundNum]);
-
-  function generateOptions(correctAnswer) {
-    const randomOptions = ["Option1", "Option2", "Option3"];
-    return [...randomOptions, correctAnswer].sort(() => Math.random() - 0.5);
-  }
 
   async function handleSubmit() {
     const teamName = localStorage.getItem("teamName");
